@@ -1,11 +1,11 @@
 var through = require('through2');
 var vm = require('vm');
+var Module = require('module');
 
 module.exports = function(context) {
 	return through.obj(function(file, enc, next) {
 		var fileContent = file.contents.toString(enc);
-		fileContent = _eval(fileContent, file.relative, context);
-		file.contents = new Buffer(fileContent);
+		file.data = _eval(fileContent, file.relative, context);
 		next(null, file);
 	});
 };
