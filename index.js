@@ -20,3 +20,5 @@ function _eval(content, filename, context) {
 
     return vm.runInNewContext(content, sandbox, {filename: filename});
 }
+
+module.exports.eval = _eval;
