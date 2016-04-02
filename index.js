@@ -18,7 +18,7 @@ function _eval(content, filename, context) {
     sandbox.require = sandbox.module.require;
 	Object.assign(sandbox, context);
 
-    return vm.runInNewContext(content, sandbox, {filename: filename});
+    return vm.runInThisContext(content, sandbox, {filename: filename});
 }
 
 module.exports.eval = _eval;
