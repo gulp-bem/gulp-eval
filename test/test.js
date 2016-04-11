@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var gulpUtil = require('gulp-util');
 
-var gulpEval = require('./');
+var gulpEval = require('../');
 
 var moduleContent =
 `module.exports = {
@@ -20,8 +20,8 @@ it('should eval simple expression', function(done) {
 
     stream.on('data', function(file) {
         expect(file.data).to.exist;
-    });
-    stream.on('end', done);
+    })
+    .on('end', done);
 
     stream.write(new gulpUtil.File({
         path: 'file.js',
@@ -97,6 +97,5 @@ it('should provide global objects', function(done) {
     stream.end();
 });
 
-var errorContent = `throw new Error('wtf')`;
-
 // TODO: Catch errors;
+// var errorContent = `throw new Error('wtf')`;
