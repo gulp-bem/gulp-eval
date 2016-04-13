@@ -2,13 +2,30 @@
   "name": "gulp-eval",
   "version": "0.1.0",
   "description": "require or eval modules",
+  "keywords": [
+    "gulp",
+    "eval",
+    "require"
+  ],
+  "author": "Vasiliy Loginevskiy <yeti.or@gmail.com>",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint && npm run specs",
+    "specs": "mocha test",
+    "lint": "jshint . && jscs .",
+    "cover": "istanbul cover _mocha -- test",
+    "coveralls": "npm i coveralls && npm run cover && cat ./coverage/lcov.info | coveralls"
   },
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "through2": "^2.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp-util": "^3.0.7",
+    "istanbul": "^0.4.2",
+    "jscs": "^2.11.0",
+    "jshint": "^2.9.1",
+    "mocha": "^2.4.5"
   }
 }
