@@ -14,8 +14,7 @@
     "test": "npm run lint && npm run specs",
     "specs": "mocha test",
     "lint": "jshint . && jscs .",
-    "cover": "istanbul cover _mocha -- test",
-    "coveralls": "npm i coveralls && npm run cover && cat ./coverage/lcov.info | coveralls"
+    "cover": "istanbul cover _mocha -- test"
   },
   "dependencies": {
     "through2": "^2.0.1"
