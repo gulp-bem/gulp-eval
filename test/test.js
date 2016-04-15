@@ -1,188 +1,65 @@
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+chai.should();// WTF chaiAsPromised !??
+
 var gulpUtil = require('gulp-util');
 
 var gulpEval = require('../');
 
-it('should eval simple expression', function(done) {
-    var stream = gulpEval();
+function coco(content, context) {
+    var promise =  new Promise(function(resolve, reject) {
+        var stream = gulpEval(context);
 
-    stream.on('data', function(file) {
-        expect(file.data).to.exist;
-    })
-    .on('end', done);
+        stream
+            .on('data', (file) => resolve(file.data))
+            .on('error', reject);
 
-    stream.write(new gulpUtil.File({
-        path: 'file.js',
-        contents: new Buffer('({})')
-    }));
+        if(typeof content === 'string') {
+            content = {
+                path: 'file.js',
+                contents: new Buffer(content)
+            };
+        } else {
+            content = {
+                path: 'file.json',
+                contents: new Buffer(JSON.stringify(content))
+            };
+        }
 
-    stream.end();
-});
-
-it('should not eval simple object', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data).not.to.exist;
+        stream.write(new gulpUtil.File(content)) || reject('Writing to stream failed');
+        stream.end();
     });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'file.js',
-        contents: new Buffer('{}')
-    }));
-
-    stream.end();
-});
-
-var moduleContent =
-`module.exports = {
-    block: 'page',
-    content: 'hello'
-}`;
-
-it('should eval module.exports', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('page');
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'blocks/button.js',
-        contents: new Buffer(moduleContent)
-    }));
-
-    stream.end();
-});
-
-var exportsContent =
-`exports = {
-    block: 'page',
-    content: 'hello'
-}`;
-
-it('should eval module', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('page');
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'blocks/button.js',
-        contents: new Buffer(exportsContent)
-    }));
-
-    stream.end();
-});
-
-var moduleExportsContent =
-`exports = module.exports = {
-    block: 'page',
-    content: 'hello'
-}`;
-
-it('should eval exports = module.exports', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('page');
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'blocks/button.js',
-        contents: new Buffer(moduleExportsContent)
-    }));
-
-    stream.end();
-});
-
-var moduleExportsChangeField =
-`exports.block = 'Fuck';
-`;
-
-it('should eval exports part', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('Fuck');
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'blocks/button.js',
-        contents: new Buffer(moduleExportsChangeField)
-    }));
-
-    stream.end();
-});
-
-var requireContent =
-`
-var p = require('../package.json');
-module.exports = {
-    block: p.name,
-    content: 'hello'
+    return promise.should.eventually;
 }
-`;
 
-it('should eval module with require', function(done) {
-    var stream = gulpEval();
+it('should eval simple expression', () => coco('({42:42})').eql({42: 42}));
 
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('gulp-eval');
-    });
-    stream.on('end', done);
+it('should not eval simple object', () => coco('{}').not.to.exist);
 
-    stream.write(new gulpUtil.File({
-        path: 'blocks/button.js',
-        contents: new Buffer(requireContent)
-    }));
+it('should eval module.exports', () => coco('module.exports = {42:42}').eql({42: 42}));
 
-    stream.end();
+it('should eval exports', () => coco('exports.block = 42').eql({block: 42}));
+
+it('should eval exports replace', () => coco('exports = {42:42}').eql({42: 42}));
+
+it('should eval exports = module.exports', () => coco('exports = module.exports = {42:42}').eql({42: 42}));
+
+it('should eval module with require', () => {
+    var requireContent =
+    `
+        var p = require('../package.json');
+        module.exports = {
+            block: p.name,
+        };
+    `;
+    coco(requireContent).eql({block: 'gulp-eval'});
 });
 
-var evalContent =
-`({
-    block: 'page',
-    content: 'hello'
-})`;
+it('should provide global objects', () => coco('module.exports = typeof chai === "object"', {chai}).to.be.true);
 
-it('should eval object', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('page');
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'file.js',
-        contents: new Buffer(evalContent)
-    }));
-
-    stream.end();
-});
-
-it('should eval json', function(done) {
-    var stream = gulpEval();
-
-    stream.on('data', function(file) {
-        expect(file.data.block).to.equal('page');
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'file.json',
-        contents: new Buffer('{"block":"page"}')
-    }));
-
-    stream.end();
-});
+it('should eval json', () => coco({42: 42}).eql({42: 42}));
 
 it('should throw on bad json', function() {
     var stream = gulpEval();
@@ -192,25 +69,6 @@ it('should throw on bad json', function() {
             contents: new Buffer('{"block":"page",}')
         }));
     }).to.throw(Error);
-
-    stream.end();
-});
-
-var globalObjectsContent = `module.exports = typeof boo === 'object'`;
-
-it('should provide global objects', function(done) {
-    var boo = {};
-    var stream = gulpEval({boo});
-
-    stream.on('data', function(file) {
-        expect(file.data).to.be.true;
-    });
-    stream.on('end', done);
-
-    stream.write(new gulpUtil.File({
-        path: 'file.js',
-        contents: new Buffer(globalObjectsContent)
-    }));
 
     stream.end();
 });
