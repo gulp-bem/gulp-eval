@@ -11,6 +11,14 @@ module.exports = function(context) {
     });
 };
 
+/**
+ * Eval expressions, JSON files or require commonJS modules
+ *
+ * @param {String} content
+ * @param {String} [filename] path to file which content we execute
+ * @param {Object} [context] objects to provide into execute method
+ * @returns {*}
+ */
 function _eval(content, filename, context) {
     var dirname = path.dirname(filename);
     var ext = path.extname(filename);
@@ -54,6 +62,14 @@ function _eval(content, filename, context) {
 
 module.exports.eval = _eval;
 
+/**
+ * Wrap code with function expression
+ * Use nodejs style default wrapper
+ *
+ * @param {String} body
+ * @param {String[]} [extKeys] keys to extend function args
+ * @returns {String}
+ */
 function wrap(body, extKeys) {
     var wrapper = [
         '(function (exports, require, module, __filename, __dirname',
@@ -68,6 +84,10 @@ function wrap(body, extKeys) {
     return wrapper[0] + extKeys + wrapper[1] + body + wrapper[2];
 }
 
+/**
+ * Execute function inside try-catch
+ * function with try-catch is not optimized so we made this helper
+ */
 function tryCatch(fn, cb) {
     try {
         return fn();
