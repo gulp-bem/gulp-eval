@@ -1,7 +1,11 @@
 # gulp-eval
 
 Require CommonJS modules, JSON files or files with JS-expression inside gulp tasks with ease.
-[![NPM version](http://img.shields.io/npm/v/gulp-eval.svg?style=flat)](http://www.npmjs.org/package/gulp-eval) [![Build Status](http://img.shields.io/travis/gulp-bem/gulp-eval/master.svg?style=flat&label=tests)](https://travis-ci.org/gulp-bem/gulp-eval) [![Coverage Status](https://img.shields.io/coveralls/gulp-bem/gulp-eval.svg?branch=master&style=flat)](https://coveralls.io/r/gulp-bem/gulp-eval) [![Dependency Status](http://img.shields.io/david/gulp-bem/gulp-eval.svg?style=flat)](https://david-dm.org/gulp-bem/gulp-eval)
+
+[![NPM version](http://img.shields.io/npm/v/gulp-eval.svg?style=flat)](http://www.npmjs.org/package/gulp-eval)
+[![Build Status](http://img.shields.io/travis/gulp-bem/gulp-eval/master.svg?style=flat&label=tests)](https://travis-ci.org/gulp-bem/gulp-eval)
+[![Coverage Status](https://img.shields.io/coveralls/gulp-bem/gulp-eval.svg?branch=master&style=flat)](https://coveralls.io/r/gulp-bem/gulp-eval)
+[![Dependency Status](http://img.shields.io/david/gulp-bem/gulp-eval.svg?style=flat)](https://david-dm.org/gulp-bem/gulp-eval)
 
 `gulp-eval` fills `data` property of [Vinyl](https://github.com/gulpjs/vinyl) objects.
 
@@ -50,7 +54,7 @@ You can provide some like-a-global variables into gulp-eval
 var gulpEval = require('gulp-eval');
 var globalVar = 42;
 var transformStream = gulpEval({globalVar: globalVar});
-```js
+```
 
 Using global with eval:
 ```js
