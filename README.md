@@ -29,24 +29,6 @@ gulp.task('default', () =>
 );
 ```
 
-## Eval
-You can use eval function without gulp
-
-```js
-var safeEval = require('gulp-eval').eval;
-
-var requireContent =
-`
-    var p = require('../package.json');
-    module.exports = {
-        elem: p.name
-    };
-`;
-
-var block = safeEval(requireContent);
-console.log(block.elem);
-```
-
 ## Context
 You can provide some like-a-global variables into gulp-eval
 
@@ -54,15 +36,7 @@ You can provide some like-a-global variables into gulp-eval
 var gulpEval = require('gulp-eval');
 var globalVar = 42;
 var transformStream = gulpEval({globalVar: globalVar});
-```
 
-Using global with eval:
-```js
-var safeEval = require('gulp-eval').eval;
+// globalVar will be in context of evaluated code
 
-var secretKey = '^___^';
-var content = 'module.exports = secretKey;';
-
-var res = safeEval(content, 'file.js', {secretKey: secretKey});
-console.log(res); // '^___^'
 ```
