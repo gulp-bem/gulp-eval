@@ -17,6 +17,7 @@
     "cover": "istanbul cover _mocha -- test"
   },
   "dependencies": {
+    "node-eval": "^1.0.0",
     "through2": "^2.0.1"
   },
   "devDependencies": {
