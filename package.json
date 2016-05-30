@@ -8,7 +8,7 @@
     "require"
   ],
   "author": "Vasiliy Loginevskiy <yeti.or@gmail.com>",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "repository": "gulp-bem/gulp-eval",
   "main": "index.js",
   "scripts": {
