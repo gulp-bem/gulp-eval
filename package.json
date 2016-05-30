@@ -1,7 +1,7 @@
 {
   "name": "gulp-eval",
   "version": "1.0.0",
-  "description": "require or eval modules",
+  "description": "require or eval node modules",
   "keywords": [
     "gulp",
     "eval",
@@ -9,6 +9,7 @@
   ],
   "author": "Vasiliy Loginevskiy <yeti.or@gmail.com>",
   "license": "MIT",
+  "repository": "gulp-bem/gulp-eval",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && npm run specs",
